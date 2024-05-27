@@ -1,0 +1,2 @@
+Start Projeto Node
+    npm init -y
