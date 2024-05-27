@@ -1,2 +1,8 @@
 Start Projeto Node
     npm init -y
+
+Instalar dependencias
+    npm install express
+    npm install mongodb
+    npm install mongoose
+    npm install dotenv
