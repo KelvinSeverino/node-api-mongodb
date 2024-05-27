@@ -38,4 +38,11 @@ app.post("/livros", (req, res) => {
     res.status(201).send("Livro cadastrado com sucesso!");
 });
 
+app.put("/livros/:id", (req, res) => {
+    const index = searchBook(req.params.id);
+    books[index].title = req.body.title;
+    res.status(200).json(books[index]);
+    //res.status(201).send("Livro atualizado com sucesso!");
+});
+
 export default app;
