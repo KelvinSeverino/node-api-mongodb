@@ -57,6 +57,16 @@ class BookController {
             res.status(500).json({message: `${error.message} - Falha na exclusao`});            
         } 
     }    
+
+    static async findByPublisher (req, res) {       
+        try {
+            const publisher = req.query.publisher;
+            const booksByPublisher = await book.find({ publisher: publisher });
+            res.status(200).send(booksByPublisher);            
+        } catch (error) {
+            res.status(500).json({message: `${error.message} - Falha na requisicao`});            
+        } 
+    }
 };
 
 export default BookController;
