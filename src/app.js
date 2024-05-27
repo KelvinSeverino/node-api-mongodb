@@ -45,4 +45,10 @@ app.put("/livros/:id", (req, res) => {
     //res.status(201).send("Livro atualizado com sucesso!");
 });
 
+app.delete("/livros/:id", (req, res) => {
+    const index = searchBook(req.params.id);
+    books.splice(index, 1);
+    res.status(200).send("Livro apagado com sucesso!");
+});
+
 export default app;
