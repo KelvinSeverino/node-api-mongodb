@@ -74,35 +74,48 @@ class BookController {
 
     static async findByFilter (req, res, next) {       
         try {
-            const search = BookController.prepareSearch(req.query);
+            const search = await prepareSearch(req.query);
 
-            const booksByPublisher = await book.find(search);
-            res.status(200).send(booksByPublisher);            
+            if(search !== null) {
+                const booksByPublisher = await book.find(search);
+                res.status(200).send(booksByPublisher);  
+            } else {                
+                res.status(200).send([]);  
+            }           
         } catch (error) {
             next(error); //envia para o middleware de erros          
         } 
     }
-
-    static prepareSearch(params)
-    {
-        const {publisher, title, minPages, maxPages} = params;
-
-        //const regex = new RegExp(title, "i"); //1 opcao, nativa node com regex
-        //if(title) search.title = regex;
-
-        const search = {};
-        if(publisher) search.publisher = publisher;
-        if(title) search.title = { $regex: title, $options: "i" };
-
-        if(minPages || maxPages) search.pages = {};
-        
-        //gte = Greater Than or Equal >=
-        if(minPages) search.pages.$gte = minPages;        
-        //lte = Less Than or Equal <=
-        if(maxPages) search.pages.$lte = maxPages;
-
-        return search;
-    }
 };
+
+async function prepareSearch(params)
+{
+    const {publisher, title, minPages, maxPages, authorName} = params;
+
+    //const regex = new RegExp(title, "i"); //1 opcao, nativa node com regex
+    //if(title) search.title = regex;
+
+    let search = {};
+    if(publisher) search.publisher = publisher;
+    if(title) search.title = { $regex: title, $options: "i" };
+
+    if(minPages || maxPages) search.pages = {};
+    
+    //gte = Greater Than or Equal >=
+    if(minPages) search.pages.$gte = minPages;        
+    //lte = Less Than or Equal <=
+    if(maxPages) search.pages.$lte = maxPages;
+
+    if(authorName) {
+        const authorData = await author.find({ name: authorName });
+        if(authorData !== null) {
+            search.author = authorData._id;
+        } else {
+            search = null;
+        }
+    }
+
+    return search;
+}
 
 export default BookController;
