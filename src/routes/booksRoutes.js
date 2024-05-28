@@ -7,7 +7,7 @@ app.use(express.json());
 const routes = express.Router();
 
 routes.get("/livros", BookController.getAll)
-routes.get("/livros/busca", BookController.findByPublisher)
+routes.get("/livros/busca", BookController.findByFilter)
 routes.get("/livros/:id", BookController.findById)
 routes.post("/livros", BookController.store)
 routes.put("/livros/:id", BookController.update)
