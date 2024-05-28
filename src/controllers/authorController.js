@@ -42,8 +42,12 @@ class AuthorController {
     static async update (req, res, next) {       
         try {
             const id = req.params.id;
-            await author.findByIdAndUpdate(id, req.body);
-            res.status(200).json({message: "Autor atualizado"});            
+            const authorResult = await author.findByIdAndUpdate(id, req.body);
+            if(authorResult !== null){
+                res.status(200).json({message: "Autor atualizado"});        
+            } else {
+                next(new NotFound("ID do autor não localizado"));           
+            }                      
         } catch (error) {
             next(error); //envia para o middleware de erros       
         } 
@@ -51,9 +55,13 @@ class AuthorController {
 
     static async delete (req, res, next) {       
         try {
-            const id = req.params.id;
-            await author.findByIdAndDelete(id);
-            res.status(200).json({message: "Autor removido"});            
+            const id = req.params.id;            
+            const authorResult = await author.findByIdAndDelete(id);
+            if(authorResult !== null){
+                res.status(200).json({message: "Autor removido"});       
+            } else {
+                next(new NotFound("ID do autor não localizado"));           
+            }           
         } catch (error) {
             next(error); //envia para o middleware de erros        
         } 

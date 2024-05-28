@@ -1,5 +1,6 @@
 import book from "../models/Book.js"
 import { author } from "../models/Author.js";
+import NotFound from "../errors/NotFound.js";
 
 class BookController {
 
@@ -16,8 +17,13 @@ class BookController {
         try {
             const id = req.params.id;
             const searchedBook = await book.findById(id);
-            res.status(200).send(searchedBook);            
+            if(searchedBook !== null){
+                res.status(200).send(searchedBook);  
+            } else {
+                next(new NotFound("ID do livro não localizado"));           
+            }         
         } catch (error) {
+            console.log(error);
             next(error); //envia para o middleware de erros        
         } 
     }
@@ -41,8 +47,12 @@ class BookController {
     static async update (req, res, next) {       
         try {
             const id = req.params.id;
-            await book.findByIdAndUpdate(id, req.body);
-            res.status(200).json({message: "Livro atualizado"});            
+            const bookResult = await book.findByIdAndUpdate(id, req.body);
+            if(bookResult !== null){
+                res.status(200).json({message: "Livro atualizado"});  
+            } else {
+                next(new NotFound("ID do livro não localizado"));           
+            }           
         } catch (error) {
             next(error); //envia para o middleware de erros          
         } 
@@ -51,8 +61,12 @@ class BookController {
     static async delete (req, res, next) {       
         try {
             const id = req.params.id;
-            await book.findByIdAndDelete(id);
-            res.status(200).json({message: "Livro removido"});            
+            const bookResult = await book.findByIdAndDelete(id);
+            if(bookResult !== null){
+                res.status(200).json({message: "Livro removido"});  
+            } else {
+                next(new NotFound("ID do livro não localizado"));           
+            }           
         } catch (error) {
             next(error); //envia para o middleware de erros        
         } 
