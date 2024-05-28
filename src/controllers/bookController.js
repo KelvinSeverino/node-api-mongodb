@@ -3,26 +3,26 @@ import { author } from "../models/Author.js";
 
 class BookController {
 
-    static async getAll (req, res) {       
+    static async getAll (req, res, next) {       
         try {
             const listBooks = await book.find({});
             res.status(200).send(listBooks);            
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha na requisicao`});            
+            next(error); //envia para o middleware de erros    
         } 
     }
 
-    static async findById (req, res) {       
+    static async findById (req, res, next) {       
         try {
             const id = req.params.id;
             const searchedBook = await book.findById(id);
             res.status(200).send(searchedBook);            
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha na requisicao`});            
+            next(error); //envia para o middleware de erros        
         } 
     }
 
-    static async store (req, res) {
+    static async store (req, res, next) {
         const newBook = req.body;
 
         try {
@@ -34,37 +34,37 @@ class BookController {
                 book: bookCreated
             });
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha ao cadastrar`});
+            next(error); //envia para o middleware de erros
         }
     }    
 
-    static async update (req, res) {       
+    static async update (req, res, next) {       
         try {
             const id = req.params.id;
             await book.findByIdAndUpdate(id, req.body);
             res.status(200).json({message: "Livro atualizado"});            
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha na atualizacao`});            
+            next(error); //envia para o middleware de erros          
         } 
     }
 
-    static async delete (req, res) {       
+    static async delete (req, res, next) {       
         try {
             const id = req.params.id;
             await book.findByIdAndDelete(id);
             res.status(200).json({message: "Livro removido"});            
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha na exclusao`});            
+            next(error); //envia para o middleware de erros        
         } 
     }    
 
-    static async findByPublisher (req, res) {       
+    static async findByPublisher (req, res, next) {       
         try {
             const publisher = req.query.publisher;
             const booksByPublisher = await book.find({ publisher: publisher });
             res.status(200).send(booksByPublisher);            
         } catch (error) {
-            res.status(500).json({message: `${error.message} - Falha na requisicao`});            
+            next(error); //envia para o middleware de erros          
         } 
     }
 };
