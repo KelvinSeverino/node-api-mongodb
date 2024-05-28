@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
+import BaseError from "../errors/BaseError.js";
+import IncorrectRequest from "../errors/IncorrectRequest.js";
+import ValidationError from "../errors/ValidationError.js";
 
 function errorHandler (error, req, res, next) {       
     if(error instanceof mongoose.Error.CastError) {
-        res.status(400).send({message: "Um ou mais dados fornecidos estão incorretos"});      
+        new IncorrectRequest().sendResponse(res);
     } else if (error instanceof mongoose.Error.ValidationError) {
-        const errorsMessage = Object.values(error.errors)
-                                    .map(error => error.message)
-                                    .join("; ");
-
-        res.status(400).send({message: `Os seguintes erros foram encontrados: ${errorsMessage}`})
+        new ValidationError(error).sendResponse(res);
     } else {
-        res.status(500).send({message: `${error.message} - Falha na requisicao`});  
+        new BaseError().sendResponse(res);
     };
 }
 
