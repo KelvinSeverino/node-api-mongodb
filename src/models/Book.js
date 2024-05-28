@@ -17,8 +17,14 @@ const bookSchema = new mongoose.Schema({
     price: { type: Number },
     pages: { 
         type: Number,
-        min: [10, 'O Numero deve paginas estar entre 10 e 5000. Valor fornecido: {VALUE}'],
-        max: [5000, 'O Numero deve paginas estar entre 10 e 5000. Valor fornecido: {VALUE}'],
+        // min: [10, 'O Numero deve paginas estar entre 10 e 5000. Valor fornecido: {VALUE}'],
+        // max: [5000, 'O Numero deve paginas estar entre 10 e 5000. Valor fornecido: {VALUE}'],
+        validate: {
+            validator: (value) => {
+                return value >= 10 && value <= 5000;
+            },
+            message: "O Numero deve paginas estar entre 10 e 5000. Valor fornecido: {VALUE}"
+        }
     },
     author: authorSchema
 }, { versionKey: false });
