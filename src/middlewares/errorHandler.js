@@ -12,6 +12,7 @@ function errorHandler (error, req, res, next) {
     } else if (error instanceof NotFound) {
         error.sendResponse(res);
     } else {
+        console.log(error)
         new BaseError().sendResponse(res);
     };
 }
