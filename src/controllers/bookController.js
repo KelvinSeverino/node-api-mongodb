@@ -1,13 +1,24 @@
 import book from "../models/Book.js"
 import { author } from "../models/index.js";
 import NotFound from "../errors/NotFound.js";
+import IncorrectRequest from "../errors/IncorrectRequest.js";
 
 class BookController {
 
     static async getAll (req, res, next) {       
         try {
-            const listBooks = await book.find({});
-            res.status(200).send(listBooks);            
+            let { limit = 5, page = 1 } = req.query;
+
+            limit = parseInt(limit);
+            page = parseInt(page);
+            if(limit > 0 && pagina > 0){
+                const listBooks = await book.find()
+                                            .skip((page - 1) * limit)
+                                            .limit(limit);
+                res.status(200).send(listBooks); 
+            } else {
+                next(new IncorrectRequest());
+            }
         } catch (error) {
             next(error); //envia para o middleware de erros    
         } 
