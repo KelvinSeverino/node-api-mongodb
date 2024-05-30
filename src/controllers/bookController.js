@@ -7,28 +7,11 @@ class BookController {
 
     static async getAll (req, res, next) {       
         try {
-            let { 
-                limit = 5, 
-                page = 1, 
-                //orderField = '_id', 
-                //order = -1 
-                ordernation = "_id:-1"
-            } = req.query;
+            const listBooks = book.find();
 
-            let [orderField, order] = ordernation.split(":");
+            req.result = listBooks;
 
-            limit = parseInt(limit);
-            page = parseInt(page);
-            order = parseInt(order);
-            if(limit > 0 && page > 0){
-                const listBooks = await book.find()
-                                            .sort({ [orderField]: order }) //-1 = desc, 1 = asc
-                                            .skip((page - 1) * limit)
-                                            .limit(limit);
-                res.status(200).send(listBooks); 
-            } else {
-                next(new IncorrectRequest());
-            }
+            next(); //executa proximo middleware, no caso pagination.js
         } catch (error) {
             console.log(error);
             next(error); //envia para o middleware de erros    
@@ -99,8 +82,11 @@ class BookController {
             const search = await prepareSearch(req.query);
 
             if(search !== null) {
-                const booksByPublisher = await book.find(search);
-                res.status(200).send(booksByPublisher);  
+                const booksByFilter = book.find(search);
+
+                req.result = booksByFilter;
+
+                next(); //executa proximo middleware, no caso pagination.js
             } else {                
                 res.status(200).send([]);  
             }           

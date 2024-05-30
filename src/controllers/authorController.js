@@ -5,8 +5,11 @@ class AuthorController {
 
     static async getAll (req, res, next) {       
         try {
-            const listAuthors = await author.find({});
-            res.status(200).send(listAuthors);            
+            const listAuthors = author.find();            
+
+            req.result = listAuthors;
+
+            next(); //executa proximo middleware, no caso pagination.js
         } catch (error) {
             next(error); //envia para o middleware de erros       
         } 
