@@ -7,12 +7,22 @@ class BookController {
 
     static async getAll (req, res, next) {       
         try {
-            let { limit = 5, page = 1 } = req.query;
+            let { 
+                limit = 5, 
+                page = 1, 
+                //orderField = '_id', 
+                //order = -1 
+                ordernation = "_id:-1"
+            } = req.query;
+
+            let [orderField, order] = ordernation.split(":");
 
             limit = parseInt(limit);
             page = parseInt(page);
-            if(limit > 0 && pagina > 0){
+            order = parseInt(order);
+            if(limit > 0 && page > 0){
                 const listBooks = await book.find()
+                                            .sort({ [orderField]: order }) //-1 = desc, 1 = asc
                                             .skip((page - 1) * limit)
                                             .limit(limit);
                 res.status(200).send(listBooks); 
@@ -20,6 +30,7 @@ class BookController {
                 next(new IncorrectRequest());
             }
         } catch (error) {
+            console.log(error);
             next(error); //envia para o middleware de erros    
         } 
     }
